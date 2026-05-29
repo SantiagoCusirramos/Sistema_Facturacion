@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "vbvTt0xsjHc=",
+  "dgSpecHash": "Kxj7Ur7YZuU=",
   "success": true,
   "projectFilePath": "/home/fdx/Projects/Sistema_Facturacion/Sistema_Facturacion.csproj",
   "expectedPackageFiles": [
@@ -17,7 +17,6 @@
     "/home/fdx/.nuget/packages/avalonia.themes.fluent/11.0.10/avalonia.themes.fluent.11.0.10.nupkg.sha512",
     "/home/fdx/.nuget/packages/avalonia.win32/11.0.10/avalonia.win32.11.0.10.nupkg.sha512",
     "/home/fdx/.nuget/packages/avalonia.x11/11.0.10/avalonia.x11.11.0.10.nupkg.sha512",
-    "/home/fdx/.nuget/packages/avaloniaui.diagnosticssupport/2.2.1/avaloniaui.diagnosticssupport.2.2.1.nupkg.sha512",
     "/home/fdx/.nuget/packages/azure.core/1.35.0/azure.core.1.35.0.nupkg.sha512",
     "/home/fdx/.nuget/packages/azure.identity/1.10.3/azure.identity.1.10.3.nupkg.sha512",
     "/home/fdx/.nuget/packages/harfbuzzsharp/7.3.0/harfbuzzsharp.7.3.0.nupkg.sha512",
@@ -30,8 +29,6 @@
     "/home/fdx/.nuget/packages/microsoft.csharp/4.5.0/microsoft.csharp.4.5.0.nupkg.sha512",
     "/home/fdx/.nuget/packages/microsoft.data.sqlclient/5.1.4/microsoft.data.sqlclient.5.1.4.nupkg.sha512",
     "/home/fdx/.nuget/packages/microsoft.data.sqlclient.sni.runtime/5.1.1/microsoft.data.sqlclient.sni.runtime.5.1.1.nupkg.sha512",
-    "/home/fdx/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.0/microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
-    "/home/fdx/.nuget/packages/microsoft.extensions.logging.abstractions/8.0.0/microsoft.extensions.logging.abstractions.8.0.0.nupkg.sha512",
     "/home/fdx/.nuget/packages/microsoft.identity.client/4.56.0/microsoft.identity.client.4.56.0.nupkg.sha512",
     "/home/fdx/.nuget/packages/microsoft.identity.client.extensions.msal/4.56.0/microsoft.identity.client.extensions.msal.4.56.0.nupkg.sha512",
     "/home/fdx/.nuget/packages/microsoft.identitymodel.abstractions/6.24.0/microsoft.identitymodel.abstractions.6.24.0.nupkg.sha512",
@@ -40,7 +37,6 @@
     "/home/fdx/.nuget/packages/microsoft.identitymodel.protocols/6.24.0/microsoft.identitymodel.protocols.6.24.0.nupkg.sha512",
     "/home/fdx/.nuget/packages/microsoft.identitymodel.protocols.openidconnect/6.24.0/microsoft.identitymodel.protocols.openidconnect.6.24.0.nupkg.sha512",
     "/home/fdx/.nuget/packages/microsoft.identitymodel.tokens/6.24.0/microsoft.identitymodel.tokens.6.24.0.nupkg.sha512",
-    "/home/fdx/.nuget/packages/microsoft.io.recyclablememorystream/3.0.1/microsoft.io.recyclablememorystream.3.0.1.nupkg.sha512",
     "/home/fdx/.nuget/packages/microsoft.netcore.platforms/1.1.0/microsoft.netcore.platforms.1.1.0.nupkg.sha512",
     "/home/fdx/.nuget/packages/microsoft.netcore.targets/1.1.0/microsoft.netcore.targets.1.1.0.nupkg.sha512",
     "/home/fdx/.nuget/packages/microsoft.sqlserver.server/1.0.0/microsoft.sqlserver.server.1.0.0.nupkg.sha512",

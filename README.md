@@ -1,23 +1,70 @@
-Este sera un sistema de facturacion realizado en C#
+# Sistema de Facturación en C#
 
-Para iniciar este proyecto se estan usandon las siguientes herramientas
+## Tecnologías y Herramientas Utilizadas
 
-Creamos el proyecto con Avalonia con el objetivo que nos ayude con la interfaz grafica para la aplicacion
+Este proyecto consiste en el desarrollo de un **sistema de facturación en C#** utilizando tecnologías modernas compatibles con múltiples sistemas operativos.
 
-``` bash
+### Creación del Proyecto con Avalonia
+
+Para la interfaz gráfica se ha seleccionado **Avalonia UI**, debido a su enfoque multiplataforma y su compatibilidad con Linux, Windows y macOS.
+
+El proyecto fue creado mediante el siguiente comando:
+
+```bash
 dotnet new avalonia.app -n Sistema_Facturacion
 ```
 
-Posteriormente para la conexcion con la DB agregamos el siguiente paquete
+---
 
-``` bash
+## Configuración de Dependencias
+
+### Conexión con la Base de Datos
+
+Para permitir la conexión con SQL Server, se agregó el paquete `Microsoft.Data.SqlClient`:
+
+```bash
 dotnet add package Microsoft.Data.SqlClient
 ```
 
-Asi mismo esto lo complementamos con los controles de Avalonia
+### Controles Adicionales para la Interfaz
+
+Asimismo, se incorporó el paquete `Avalonia.Controls.DataGrid`, el cual proporciona componentes avanzados para la manipulación y visualización de datos:
 
 ```bash
 dotnet add package Avalonia.Controls.DataGrid
 ```
 
-En relacion al .NET que se esta usando, se ha optado por la version 8.0 debido a la compatibilidad que tiene con sistema operativos como linux
+---
+
+## Versión de .NET Utilizada
+
+El proyecto utiliza **.NET 8.0**, principalmente por su estabilidad, rendimiento y excelente compatibilidad con sistemas operativos Linux.
+
+---
+
+# Configuración de la Base de Datos
+
+Una vez creado el archivo `.sql` correspondiente a la estructura de la base de datos, se procede con su ejecución mediante `sqlcmd`.
+
+> En este caso, se ha configurado una contraseña personalizada para el usuario `sa`.
+> La contraseña personalizada es `fdx_santi@#282805`
+
+---
+
+## Creación de la Base de Datos
+
+El siguiente comando crea la base de datos `InvoiceSystem`:
+
+```bash
+sqlcmd -S localhost -U sa -P "PASSWORDS" -C -Q "CREATE DATABASE InvoiceSystem"
+```
+
+---
+
+## Ejecución del Script SQL
+
+Posteriormente, se ejecuta el script que contiene las tablas, relaciones y demás configuraciones necesarias:
+
+```bash
+sqlcmd -S localhost -U sa -P "PASSWORDS" -C -d InvoiceSystem -i ~/Projects/Sistema_Facturacion/Facturacion_DB/facturacion_db.sql
+```
