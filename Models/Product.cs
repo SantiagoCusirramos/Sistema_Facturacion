@@ -1,5 +1,4 @@
 using System;
-
 namespace Sistema_Facturacion.Models;
 
 public class Product
@@ -9,8 +8,9 @@ public class Product
     public string? Description { get; set; }
     public decimal Price { get; set; }
     public int Stock { get; set; }
-    public int CategoryId { get; set; }
+    public int? CategoryId { get; set; }
     public bool IsDeleted { get; set; } = false;
     public DateTime CreatedDate { get; set; } = DateTime.Now;
-    public virtual Category Category { get; set; }
+    
+    public virtual Category? Category { get; set; }
 }
