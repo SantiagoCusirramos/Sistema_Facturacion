@@ -15,9 +15,8 @@ public class Invoice
     public decimal Tax { get; set; }
     public decimal Total { get; set; }
     public string Status { get; set; } = "ACTIVE";
-    
-    public virtual Customer Customer { get; set; }
-    public virtual PaymentMethod PaymentMethod { get; set; }
-    public virtual DocumentType DocumentType { get; set; }
-    public virtual ICollection<InvoiceDetail> Details { get; set; }
+    public virtual Customer? Customer { get; set; }
+    public virtual PaymentMethod? PaymentMethod { get; set; }
+    public virtual DocumentType? DocumentType { get; set; }
+    public virtual ICollection<InvoiceDetail>? Details { get; set; }
 }

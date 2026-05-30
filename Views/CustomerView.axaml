@@ -1,0 +1,228 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Sistema_Facturacion.Views.CustomerView"
+             Background="#2E2E2E">
+    
+    <ScrollViewer>
+        <StackPanel Margin="20">
+            
+            <!-- Header -->
+            <Border Background="#4A90D9"
+                    CornerRadius="8"
+                    Padding="15"
+                    Margin="0,0,0,20">
+                <TextBlock Text="👥 CUSTOMER MANAGEMENT"
+                           FontSize="22"
+                           FontWeight="Bold"
+                           Foreground="White"
+                           HorizontalAlignment="Center"/>
+            </Border>
+            
+            <!-- Status Message -->
+            <Border Background="#333333"
+                    CornerRadius="5"
+                    Padding="10"
+                    Margin="0,0,0,15">
+                <TextBlock Text="{Binding StatusMessage}"
+                           Foreground="#FFD700"
+                           FontWeight="Bold"/>
+            </Border>
+            
+            <!-- Search Bar -->
+            <Border Background="#404040"
+                    CornerRadius="8"
+                    Padding="15"
+                    Margin="0,0,0,15">
+                <StackPanel Orientation="Horizontal">
+                    <TextBox Text="{Binding SearchText}"
+                             Watermark="🔍 Search by name or document..."
+                             Width="300"
+                             Background="#555555"
+                             Foreground="White"
+                             Margin="0,0,10,0"/>
+                    <Button Command="{Binding SearchCommand}"
+                            Content="SEARCH"
+                            Background="#4A90D9"
+                            Foreground="White"
+                            Width="100"
+                            Margin="0,0,10,0"/>
+                    <Button Command="{Binding LoadCustomersCommand}"
+                            Content="REFRESH"
+                            Background="#4A90D9"
+                            Foreground="White"
+                            Width="100"/>
+                </StackPanel>
+            </Border>
+            
+            <!-- Customers List -->
+            <Border Background="#404040"
+                    CornerRadius="8"
+                    Padding="15"
+                    Margin="0,0,0,15">
+                <StackPanel>
+                    <TextBlock Text="📋 CUSTOMERS LIST"
+                               FontWeight="Bold"
+                               Foreground="White"
+                               Margin="0,0,0,10"/>
+                    
+                    <ListBox ItemsSource="{Binding Customers}"
+                             SelectedItem="{Binding SelectedCustomer}"
+                             Height="300"
+                             Background="#555555">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#4A4A4A"
+                                        Margin="2"
+                                        Padding="10">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Id}" 
+                                                   Width="50" 
+                                                   Foreground="White"/>
+                                        <TextBlock Text="{Binding DocumentId}" 
+                                                   Width="100" 
+                                                   Foreground="#FFD700"
+                                                   FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding Name}" 
+                                                   Width="200" 
+                                                   Foreground="White"/>
+                                        <TextBlock Text="{Binding Phone}" 
+                                                   Width="120" 
+                                                   Foreground="#CCCCCC"/>
+                                        <TextBlock Text="{Binding Email}" 
+                                                   Width="200" 
+                                                   Foreground="#CCCCCC"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    
+                    <TextBlock Text="{Binding Customers.Count, StringFormat='Total: {0} customers'}"
+                               Foreground="White"
+                               Margin="0,10,0,0"/>
+                </StackPanel>
+            </Border>
+            
+            <!-- Customer Form -->
+<Border Background="#404040"
+        CornerRadius="8"
+        Padding="20"
+        Margin="0,0,0,15">
+    <StackPanel>
+        <TextBlock Text="✏️ CUSTOMER FORM"
+                   FontSize="16"
+                   FontWeight="Bold"
+                   Foreground="White"
+                   Margin="0,0,0,15"/>
+        
+        <!-- Document ID and Name -->
+        <Grid ColumnDefinitions="100,*,100,*" RowDefinitions="Auto,Auto,Auto"
+              Margin="0,0,0,10">
+            
+            <TextBlock Grid.Row="0" Grid.Column="0"
+                       Text="Document ID:" 
+                       Foreground="White" 
+                       VerticalAlignment="Center"
+                       Margin="0,10,10,10"/>
+            <TextBox Grid.Row="0" Grid.Column="1"
+                     Text="{Binding DocumentId}"
+                     Watermark="DNI, RUC, Passport"
+                     Background="#555555"
+                     Foreground="White"
+                     Margin="0,10,20,10"
+                     Height="35"/>
+            
+            <TextBlock Grid.Row="0" Grid.Column="2"
+                       Text="Name:" 
+                       Foreground="White" 
+                       VerticalAlignment="Center"
+                       Margin="0,10,10,10"/>
+            <TextBox Grid.Row="0" Grid.Column="3"
+                     Text="{Binding Name}"
+                     Watermark="Full name"
+                     Background="#555555"
+                     Foreground="White"
+                     Margin="0,10,0,10"
+                     Height="35"/>
+        </Grid>
+        
+        <!-- Address -->
+        <Grid ColumnDefinitions="100,*" Margin="0,0,0,10">
+            <TextBlock Grid.Column="0"
+                       Text="Address:" 
+                       Foreground="White" 
+                       VerticalAlignment="Center"
+                       Margin="0,5,10,5"/>
+            <TextBox Grid.Column="1"
+                     Text="{Binding Address}"
+                     Watermark="Physical address"
+                     Background="#555555"
+                     Foreground="White"
+                     Margin="0,5,0,5"
+                     Height="35"/>
+        </Grid>
+        
+        <!-- Phone and Email -->
+        <Grid ColumnDefinitions="100,*,100,*" Margin="0,0,0,10">
+            <TextBlock Grid.Row="0" Grid.Column="0"
+                       Text="Phone:" 
+                       Foreground="White" 
+                       VerticalAlignment="Center"
+                       Margin="0,5,10,5"/>
+            <TextBox Grid.Row="0" Grid.Column="1"
+                     Text="{Binding Phone}"
+                     Watermark="Contact phone"
+                     Background="#555555"
+                     Foreground="White"
+                     Margin="0,5,20,5"
+                     Height="35"/>
+            
+            <TextBlock Grid.Row="0" Grid.Column="2"
+                       Text="Email:" 
+                       Foreground="White" 
+                       VerticalAlignment="Center"
+                       Margin="0,5,10,5"/>
+            <TextBox Grid.Row="0" Grid.Column="3"
+                     Text="{Binding Email}"
+                     Watermark="customer@email.com"
+                     Background="#555555"
+                     Foreground="White"
+                     Margin="0,5,0,5"
+                     Height="35"/>
+        </Grid>
+        
+        <!-- Buttons -->
+        <StackPanel Orientation="Horizontal" 
+                    Margin="0,20,0,0"
+                    HorizontalAlignment="Center"
+                    Spacing="10">
+            <Button Command="{Binding SaveCommand}"
+                    Content="💾 SAVE"
+                    Background="#27AE60"
+                    Foreground="White"
+                    Width="100"
+                    Height="40"/>
+            <Button Command="{Binding UpdateCommand}"
+                    Content="✏️ UPDATE"
+                    Background="#F39C12"
+                    Foreground="White"
+                    Width="100"
+                    Height="40"/>
+            <Button Command="{Binding DeleteCommand}"
+                    Content="🗑️ DELETE"
+                    Background="#E74C3C"
+                    Foreground="White"
+                    Width="100"
+                    Height="40"/>
+            <Button Command="{Binding ClearFormCommand}"
+                    Content="🗑️ CLEAR"
+                    Background="#95A5A6"
+                    Foreground="White"
+                    Width="100"
+                    Height="40"/>
+        </StackPanel>
+    </StackPanel>
+</Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

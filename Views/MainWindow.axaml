@@ -1,9 +1,61 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="Sistema_Facturacion.MainWindow"
-        Title="Sistema_Facturacion">
-    Welcome to Avalonia!
+        x:Class="Sistema_Facturacion.Views.MainWindow"
+        Title="{Binding WindowTitle}"
+        Width="1024" Height="768"
+        WindowStartupLocation="CenterScreen">
+    
+    <DockPanel>
+        <!-- Menu Bar -->
+        <Menu DockPanel.Dock="Top">
+            <!-- File Menu -->
+            <MenuItem Header="_File">
+                <MenuItem Header="_Logout" Command="{Binding LogoutCommand}"/>
+                <Separator/>
+                <MenuItem Header="E_xit" Command="{Binding ExitCommand}"/>
+            </MenuItem>
+            
+            <!-- Master Data Menu -->
+            <MenuItem Header="_Master Data">
+                <MenuItem Header="_Categories" Command="{Binding ShowCategoriesCommand}"/>
+                <MenuItem Header="_Customers" Command="{Binding ShowCustomersCommand}"/>
+                <MenuItem Header="_Products" Command="{Binding ShowProductsCommand}"/>
+            </MenuItem>
+            
+            <!-- Sales Menu -->
+            <MenuItem Header="_Sales">
+                <MenuItem Header="_New Sale" Command="{Binding ShowSalesCommand}"/>
+                <Separator/>
+                <MenuItem Header="_Invoice List" Command="{Binding ShowInvoicesCommand}"/>
+            </MenuItem>
+            
+            <!-- Reports Menu (optional) -->
+            <MenuItem Header="_Reports">
+                <MenuItem Header="_Sales Report" IsEnabled="False"/>
+                <MenuItem Header="_Product Report" IsEnabled="False"/>
+            </MenuItem>
+            
+            <!-- Help Menu -->
+            <MenuItem Header="_Help">
+                <MenuItem Header="_About"/>
+            </MenuItem>
+        </Menu>
+        
+        <!-- Status Bar -->
+        <StackPanel DockPanel.Dock="Bottom" 
+                    Orientation="Horizontal"
+                    Background="#F0F0F0"
+                    Height="30">
+            <TextBlock Text="{Binding CurrentModule}" 
+                       Margin="10,5"
+                       FontWeight="Bold"/>
+            <TextBlock Text="| System Ready" 
+                       Margin="10,5"/>
+        </StackPanel>
+        
+        <!-- Content Area -->
+        <Border Background="DarkSlateGray" Padding="10">
+            <ContentControl Content="{Binding CurrentView}" />
+        </Border>
+    </DockPanel>
 </Window>

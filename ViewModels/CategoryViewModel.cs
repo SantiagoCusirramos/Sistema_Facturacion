@@ -18,9 +18,11 @@ public class CategoryViewModel : INotifyPropertyChanged
     private string _searchText = string.Empty;
     private string _statusMessage = string.Empty;
     private bool _isLoading = false;
-    
+        
     private string _categoryName = string.Empty;
     private string _categoryDescription = string.Empty;
+    
+    public string DebugInfo => $"Categories in memory: {Categories.Count}";
     
     public ObservableCollection<Category> Categories
     {
@@ -86,28 +88,41 @@ public class CategoryViewModel : INotifyPropertyChanged
     public ICommand SearchCommand { get; }
     
     public CategoryViewModel()
-    {
-        LoadCategoriesCommand = new RelayCommand(LoadCategories);
-        SaveCommand = new RelayCommand(SaveCategory, CanSaveCategory);
-        UpdateCommand = new RelayCommand(UpdateCategory, CanUpdateCategory);
-        DeleteCommand = new RelayCommand(DeleteCategory, CanDeleteCategory);
-        ClearFormCommand = new RelayCommand(ClearForm);
-        SearchCommand = new RelayCommand(SearchCategories);
-        
-        LoadCategories();
-    }
+{
+    LoadCategoriesCommand = new RelayCommand(LoadCategories);
+    SaveCommand = new RelayCommand(SaveCategory);  // Sin canExecute
+    UpdateCommand = new RelayCommand(UpdateCategory);  // Sin canExecute
+    DeleteCommand = new RelayCommand(DeleteCategory);  // Sin canExecute
+    ClearFormCommand = new RelayCommand(ClearForm);
+    SearchCommand = new RelayCommand(SearchCategories);
+    
+    LoadCategories();
+    
+    Console.WriteLine("CategoryViewModel initialized - Commands ready");
+}
     
     private void LoadCategories()
     {
         try
         {
             IsLoading = true;
-            Categories = _categoryRepo.GetAll();
-            StatusMessage = $"{Categories.Count} Category loaded";
+            StatusMessage = "Loading categories...";
+        
+            var loaded = _categoryRepo.GetAll();
+            Categories = loaded;
+        
+            StatusMessage = $"SUCCESS: {Categories.Count} categories loaded";
+            Console.WriteLine($"Categories loaded: {Categories.Count}");
+        
+            if (Categories.Count == 0)
+            {
+                StatusMessage = "No categories found. Please add some categories.";
+            }
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Error: {ex.Message}";
+            StatusMessage = $"ERROR: {ex.Message}";
+            Console.WriteLine($"Error loading categories: {ex.Message}");
         }
         finally
         {

@@ -67,6 +67,12 @@
             "Microsoft.Data.SqlClient": {
               "target": "Package",
               "version": "[5.1.4, )"
+            },
+            "Microsoft.NET.ILLink.Tasks": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.27, )",
+              "autoReferenced": true
             }
           },
           "imports": [
@@ -86,7 +92,15 @@
               "version": "[8.0.27, 8.0.27]"
             },
             {
+              "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
+              "version": "[8.0.27, 8.0.27]"
+            },
+            {
               "name": "Microsoft.NETCore.App.Host.linux-x64",
+              "version": "[8.0.27, 8.0.27]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Runtime.linux-x64",
               "version": "[8.0.27, 8.0.27]"
             }
           ],
@@ -96,6 +110,11 @@
             }
           },
           "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.108/PortableRuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "linux-x64": {
+          "#import": []
         }
       }
     }

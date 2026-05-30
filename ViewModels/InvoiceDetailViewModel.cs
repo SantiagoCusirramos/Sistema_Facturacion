@@ -22,6 +22,8 @@ public class InvoiceDetailViewModel : INotifyPropertyChanged
     private string _statusMessage = string.Empty;
     private bool _isLoading = false;
     
+    public event EventHandler? BackRequested;
+    
     public Invoice CurrentInvoice
     {
         get => _currentInvoice;
@@ -66,7 +68,7 @@ public class InvoiceDetailViewModel : INotifyPropertyChanged
     public InvoiceDetailViewModel()
     {
         LoadInvoiceCommand = new RelayCommand(LoadInvoice);
-        PrintCommand = new RelayCommand(PrintInvoice, CanPrint);
+        PrintCommand = new RelayCommand(PrintInvoice);
         BackCommand = new RelayCommand(GoBack);
     }
     
@@ -103,6 +105,8 @@ public class InvoiceDetailViewModel : INotifyPropertyChanged
         // This method is called when navigating directly
         // Actual implementation depends on navigation pattern
     }
+    
+    
     
     private void LoadDetails()
     {
@@ -146,9 +150,7 @@ public class InvoiceDetailViewModel : INotifyPropertyChanged
     
     private void GoBack()
     {
-        // Navigation back to invoice list
-        // This will be implemented when views are created
-        StatusMessage = "Returning to invoice list";
+        BackRequested?.Invoke(this, EventArgs.Empty);
     }
     
     public event PropertyChangedEventHandler? PropertyChanged;

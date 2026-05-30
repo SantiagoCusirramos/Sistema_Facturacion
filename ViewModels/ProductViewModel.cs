@@ -30,6 +30,8 @@ public class ProductViewModel : INotifyPropertyChanged
     private int _minStock = 0;
     private int? _categoryId = null;
     
+    private Category _selectedCategory = null!;
+    
     public ObservableCollection<Product> Products
     {
         get => _products;
@@ -56,6 +58,20 @@ public class ProductViewModel : INotifyPropertyChanged
                 Price = value.Price;
                 Stock = value.Stock;
                 CategoryId = value.CategoryId;
+            }
+        }
+    }
+    
+    public Category SelectedCategory
+    {
+        get => _selectedCategory;
+        set 
+        { 
+            _selectedCategory = value; 
+            OnPropertyChanged();
+            if (value != null)
+            {
+                CategoryId = value.Id;
             }
         }
     }
@@ -133,9 +149,9 @@ public class ProductViewModel : INotifyPropertyChanged
     {
         LoadProductsCommand = new RelayCommand(LoadProducts);
         LoadCategoriesCommand = new RelayCommand(LoadCategories);
-        SaveCommand = new RelayCommand(SaveProduct, CanSaveProduct);
-        UpdateCommand = new RelayCommand(UpdateProduct, CanUpdateProduct);
-        DeleteCommand = new RelayCommand(DeleteProduct, CanDeleteProduct);
+        SaveCommand = new RelayCommand(SaveProduct);
+        UpdateCommand = new RelayCommand(UpdateProduct);
+        DeleteCommand = new RelayCommand(DeleteProduct);
         ClearFormCommand = new RelayCommand(ClearForm);
         SearchCommand = new RelayCommand(SearchProducts);
         
@@ -165,7 +181,9 @@ public class ProductViewModel : INotifyPropertyChanged
     {
         try
         {
-            Categories = _categoryRepo.GetAll();
+            var repo = new CategoryRepository();
+            Categories = repo.GetAll();
+            Console.WriteLine($"Categories loaded: {Categories.Count}");
         }
         catch (Exception ex)
         {

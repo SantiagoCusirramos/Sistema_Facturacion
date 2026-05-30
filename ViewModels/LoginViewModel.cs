@@ -65,51 +65,67 @@ public class LoginViewModel
 
     public LoginViewModel()
     {
-        LoginCommand = new RelayCommand(ExecuteLogin, CanExecuteLogin);
+        // LoginCommand = new RelayCommand(ExecuteLogin, CanExecuteLogin);
+        LoginCommand = new RelayCommand(ExecuteLogin);
         ExitCommand = new RelayCommand(ExecuteExit);
     }
 
-    private bool CanExecuteLogin()
-    {
-        return !IsLoading && !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password);
-    }
+    // private bool CanExecuteLogin()
+    // {
+    //     return !IsLoading && !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password);
+    // }
 
     private async void ExecuteLogin()
     {
+        Console.WriteLine("Login button clicked");
         IsLoading = true;
         ErrorMessage = string.Empty;
-
+    
         try
         {
+            if (!DatabaseHelper.TestConnection())
+            {
+                ErrorMessage = "Database connection failed.";
+                Console.WriteLine("Connection failed");
+                IsLoading = false;
+                return;
+            }
+        
+            Console.WriteLine($"Searching for user: {Username}");
+        
             await Task.Run(() =>
             {
                 var user = _userRepo.GetByUsername(Username);
+            
                 if (user == null)
                 {
-                    ErrorMessage = $"User {Username} not found";
+                    ErrorMessage = "User not found";
+                    Console.WriteLine("User not found");
                 }
                 else if (user.PasswordHash != Password)
                 {
-                    ErrorMessage = $"User {Username} has incorrect password";
+                    ErrorMessage = "Incorrect password";
+                    Console.WriteLine("Password incorrect");
                 }
                 else if (!user.IsActive)
                 {
-                    ErrorMessage = $"User {Username} is not active";
+                    ErrorMessage = "User is inactive";
+                    Console.WriteLine("User inactive");
                 }
                 else
                 {
+                    Console.WriteLine("Login successful, triggering event");
                     LoginSuccess?.Invoke(this, EventArgs.Empty);
-
                 }
             });
-            
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            ErrorMessage = $"Error:  {e.Message }";
-            Console.WriteLine(e);
-            throw;
-        } finally{
+            ErrorMessage = $"Error: {ex.Message}";
+            Console.WriteLine($"Exception: {ex.Message}");
+        }
+        finally
+        {
             IsLoading = false;
         }
     }

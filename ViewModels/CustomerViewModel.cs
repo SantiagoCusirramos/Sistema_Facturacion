@@ -106,13 +106,15 @@ public class CustomerViewModel : INotifyPropertyChanged
     public CustomerViewModel()
     {
         LoadCustomersCommand = new RelayCommand(LoadCustomers);
-        SaveCommand = new RelayCommand(SaveCustomer, CanSaveCustomer);
-        UpdateCommand = new RelayCommand(UpdateCustomer, CanUpdateCustomer);
-        DeleteCommand = new RelayCommand(DeleteCustomer, CanDeleteCustomer);
+        SaveCommand = new RelayCommand(SaveCustomer);
+        UpdateCommand = new RelayCommand(UpdateCustomer);
+        DeleteCommand = new RelayCommand(DeleteCustomer);
         ClearFormCommand = new RelayCommand(ClearForm);
         SearchCommand = new RelayCommand(SearchCustomers);
         
         LoadCustomers();
+        
+        Console.WriteLine("CategoryViewModel initialized - Commands ready");
     }
     
     private void LoadCustomers()

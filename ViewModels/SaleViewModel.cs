@@ -134,12 +134,12 @@ public class SaleViewModel : INotifyPropertyChanged
     public SaleViewModel()
     {
         LoadDataCommand = new RelayCommand(LoadData);
-        AddToCartCommand = new RelayCommand(AddToCart, CanAddToCart);
-        RemoveFromCartCommand = new RelayCommand(RemoveFromCart, CanRemoveFromCart);
-        ProcessSaleCommand = new RelayCommand(ProcessSale, CanProcessSale);
+        AddToCartCommand = new RelayCommand(AddToCart);
+        RemoveFromCartCommand = new RelayCommand(RemoveFromCart);
+        ProcessSaleCommand = new RelayCommand(ProcessSale);
         SearchProductCommand = new RelayCommand(SearchProducts);
         ClearSaleCommand = new RelayCommand(ClearSale);
-        
+    
         LoadData();
     }
     
@@ -185,13 +185,27 @@ public class SaleViewModel : INotifyPropertyChanged
     
     private bool CanAddToCart()
     {
-        return SelectedProduct != null && Quantity > 0 && Quantity <= SelectedProduct.Stock;
+        return SelectedProduct != null && 
+               Quantity > 0;
     }
-    
+
     private void AddToCart()
     {
+        if (Quantity > SelectedProduct.Stock)
+        {
+            StatusMessage = $"ERROR: Only {SelectedProduct.Stock} units available in stock";
+            return;
+        }
+    
         var existingItem = GetCartItem(SelectedProduct.Id);
-        
+    
+        int totalQuantity = (existingItem?.Quantity ?? 0) + Quantity;
+        if (totalQuantity > SelectedProduct.Stock)
+        {
+            StatusMessage = $"ERROR: Cannot add {Quantity}. Only {SelectedProduct.Stock - (existingItem?.Quantity ?? 0)} more available";
+            return;
+        }
+    
         if (existingItem != null)
         {
             existingItem.Quantity += Quantity;
@@ -208,9 +222,9 @@ public class SaleViewModel : INotifyPropertyChanged
                 Subtotal = Quantity * SelectedProduct.Price
             });
         }
-        
+    
         CalculateTotals();
-        StatusMessage = $"{Quantity} x {SelectedProduct.Name} added";
+        StatusMessage = $"✅ Added {Quantity} x {SelectedProduct.Name}";
         SelectedProduct = null!;
         Quantity = 1;
     }
@@ -227,7 +241,7 @@ public class SaleViewModel : INotifyPropertyChanged
     
     private bool CanRemoveFromCart()
     {
-        return Cart.Count > 0;
+        return SelectedCartItem != null;
     }
     
     private void RemoveFromCart()
@@ -262,15 +276,19 @@ public class SaleViewModel : INotifyPropertyChanged
         try
         {
             IsLoading = true;
+            Console.WriteLine("ProcessSale started");
             
+            // 1. Generate invoice number
             string invoiceNumber = _invoiceRepo.GenerateInvoiceNumber();
+            Console.WriteLine($"Invoice number: {invoiceNumber}");
             
+            // 2. Create invoice
             var invoice = new Invoice
             {
                 InvoiceNumber = invoiceNumber,
                 CustomerId = SelectedCustomer.Id,
-                PaymentMethodId = 1, // Cash by default
-                DocumentTypeId = 1,  // Invoice by default
+                PaymentMethodId = 1,
+                DocumentTypeId = 1,
                 IssueDate = DateTime.Now,
                 Subtotal = Subtotal,
                 Tax = Tax,
@@ -279,30 +297,52 @@ public class SaleViewModel : INotifyPropertyChanged
             };
             
             int invoiceId = _invoiceRepo.Create(invoice);
+            Console.WriteLine($"Invoice created with ID: {invoiceId}");
             
+            // 3. Save details and register Kardex
+            // Actualizar stock y registrar Kardex
             foreach (var item in Cart)
             {
                 item.InvoiceId = invoiceId;
-                _detailRepo.Create(item);
-                
+    
+                // Verificar stock actual antes de vender
                 var product = _productRepo.GetById(item.ProductId);
-                if (product != null)
+                if (product == null)
                 {
-                    int newStock = product.Stock - item.Quantity;
-                    _productRepo.UpdateStock(item.ProductId, newStock);
-                    
-                    // Register in Kardex
-                    _kardexRepo.RegisterSale(item.ProductId, item.Quantity, item.Id);
+                    throw new Exception($"Product {item.ProductId} not found");
                 }
+    
+                if (product.Stock < item.Quantity)
+                {
+                    throw new Exception($"Insufficient stock for {product.Name}. Available: {product.Stock}, Requested: {item.Quantity}");
+                }
+    
+                // Guardar detalle
+                _detailRepo.Create(item);
+    
+                // Calcular nuevo stock
+                int newStock = product.Stock - item.Quantity;
+    
+                // Actualizar stock en Product
+                _productRepo.UpdateStock(item.ProductId, newStock);
+    
+                // Registrar en Kardex
+                _kardexRepo.RegisterSale(item.ProductId, item.Quantity, item.Id);
+    
+                Console.WriteLine($"Product {product.Name}: Stock {product.Stock} → {newStock}");
             }
             
-            StatusMessage = $"Invoice {invoiceNumber} created successfully";
+            StatusMessage = $"✅ Invoice {invoiceNumber} created successfully";
+            Console.WriteLine("Sale completed successfully");
             ClearSale();
+            Products = _productRepo.GetAll();
             LoadData();
         }
         catch (Exception ex)
         {
             StatusMessage = $"Error processing sale: {ex.Message}";
+            Console.WriteLine($"ProcessSale error: {ex.Message}");
+            Console.WriteLine($"Stack trace: {ex.StackTrace}");
         }
         finally
         {

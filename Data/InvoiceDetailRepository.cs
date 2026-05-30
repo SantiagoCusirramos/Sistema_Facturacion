@@ -54,22 +54,25 @@ public class InvoiceDetailRepository
         return details;
     }
     
-    public void Create(InvoiceDetail detail)
+    public int Create(InvoiceDetail detail)
     {
         using var conn = DatabaseHelper.GetConnection();
         conn.Open();
-        
+    
         string query = @"INSERT INTO InvoiceDetail (invoice_id, product_id, quantity, unit_price, subtotal)
-                         VALUES (@invoice_id, @product_id, @quantity, @unit_price, @subtotal)";
-        
+                     VALUES (@invoice_id, @product_id, @quantity, @unit_price, @subtotal);
+                     SELECT SCOPE_IDENTITY();";
+    
         using var cmd = new SqlCommand(query, conn);
         cmd.Parameters.AddWithValue("@invoice_id", detail.InvoiceId);
         cmd.Parameters.AddWithValue("@product_id", detail.ProductId);
         cmd.Parameters.AddWithValue("@quantity", detail.Quantity);
         cmd.Parameters.AddWithValue("@unit_price", detail.UnitPrice);
         cmd.Parameters.AddWithValue("@subtotal", detail.Subtotal);
-        
-        cmd.ExecuteNonQuery();
+    
+        int newId = Convert.ToInt32(cmd.ExecuteScalar());
+        detail.Id = newId;
+        return newId;
     }
     
     public void CreateMultiple(List<InvoiceDetail> details)

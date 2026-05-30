@@ -1,0 +1,68 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Sistema_Facturacion.Views.LoginView"
+        Title="Login - Invoice System"
+        Width="400" Height="300"
+        CanResize="False"
+        WindowStartupLocation="CenterScreen">
+    
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto"
+          ColumnDefinitions="100,*"
+          Margin="20">
+        
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" 
+                   Text="INVOICE SYSTEM" 
+                   FontSize="24" 
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,30"/>
+        
+        <!-- Username -->
+        <TextBlock Grid.Row="1" Grid.Column="0" 
+                   Text="Username:" 
+                   VerticalAlignment="Center"/>
+        <TextBox Grid.Row="1" Grid.Column="1" 
+                 Text="{Binding Username}"
+                 Watermark="Enter username"
+                 Margin="0,5"/>
+        
+        <!-- Password -->
+        <TextBlock Grid.Row="2" Grid.Column="0" 
+                   Text="Password:" 
+                   VerticalAlignment="Center"/>
+        <TextBox Grid.Row="2" Grid.Column="1" 
+                 Text="{Binding Password}"
+                 PasswordChar="*"
+                 Watermark="Enter password"
+                 Margin="0,5"/>
+        
+        <!-- Buttons -->
+        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="0,20">
+            <Button Command="{Binding LoginCommand}" 
+                    Content="Login"
+                    Width="100"
+                    Margin="0,0,10,0"/>
+            <Button Command="{Binding ExitCommand}" 
+                    Content="Exit"
+                    Width="100"/>
+        </StackPanel>
+        
+        <!-- Error Message -->
+        <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
+                   Text="{Binding ErrorMessage}"
+                   Foreground="Red"
+                   HorizontalAlignment="Center"
+                   Margin="0,10"/>
+        
+        <!-- Loading -->
+        <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
+                   Text="Loading..."
+                   Foreground="Blue"
+                   HorizontalAlignment="Center"
+                   IsVisible="{Binding IsLoading}"
+                   Margin="0,10"/>
+    </Grid>
+</Window>

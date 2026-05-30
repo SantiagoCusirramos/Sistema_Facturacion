@@ -17,11 +17,13 @@ public class InvoiceListViewModel : INotifyPropertyChanged
     private ObservableCollection<Invoice> _invoices = new();
     private ObservableCollection<Customer> _customers = new();
     private Invoice _selectedInvoice = null!;
-    private DateTime _startDate = DateTime.Now.AddDays(-30);
-    private DateTime _endDate = DateTime.Now;
-    private int? _filterCustomerId = null;
+    private string _startDate = DateTime.Now.AddDays(-30).ToString("yyyy-MM-dd");
+    private string _endDate = DateTime.Now.ToString("yyyy-MM-dd");
+    private Customer _filterCustomer = null!;
     private string _statusMessage = string.Empty;
     private bool _isLoading = false;
+    
+    public event EventHandler<int>? ViewDetailRequested;
     
     public ObservableCollection<Invoice> Invoices
     {
@@ -38,25 +40,30 @@ public class InvoiceListViewModel : INotifyPropertyChanged
     public Invoice SelectedInvoice
     {
         get => _selectedInvoice;
-        set { _selectedInvoice = value; OnPropertyChanged(); }
+        set 
+        { 
+            _selectedInvoice = value; 
+            OnPropertyChanged();
+        }
     }
     
-    public DateTime StartDate
+
+    public string StartDate
     {
         get => _startDate;
         set { _startDate = value; OnPropertyChanged(); }
     }
-    
-    public DateTime EndDate
+
+    public string EndDate
     {
         get => _endDate;
         set { _endDate = value; OnPropertyChanged(); }
     }
     
-    public int? FilterCustomerId
+    public Customer FilterCustomer
     {
-        get => _filterCustomerId;
-        set { _filterCustomerId = value; OnPropertyChanged(); }
+        get => _filterCustomer;
+        set { _filterCustomer = value; OnPropertyChanged(); }
     }
     
     public string StatusMessage
@@ -71,20 +78,21 @@ public class InvoiceListViewModel : INotifyPropertyChanged
         set { _isLoading = value; OnPropertyChanged(); }
     }
     
-    // Commands
     public ICommand LoadInvoicesCommand { get; }
     public ICommand LoadCustomersCommand { get; }
     public ICommand FilterCommand { get; }
     public ICommand ViewDetailCommand { get; }
     public ICommand CancelInvoiceCommand { get; }
     
+
+    
     public InvoiceListViewModel()
     {
         LoadInvoicesCommand = new RelayCommand(LoadInvoices);
         LoadCustomersCommand = new RelayCommand(LoadCustomers);
         FilterCommand = new RelayCommand(ApplyFilter);
-        ViewDetailCommand = new RelayCommand(ViewDetail, CanViewDetail);
-        CancelInvoiceCommand = new RelayCommand(CancelInvoice, CanCancelInvoice);
+        ViewDetailCommand = new RelayCommand(ViewDetail);
+        CancelInvoiceCommand = new RelayCommand(CancelInvoice);
         
         LoadCustomers();
         LoadInvoices();
@@ -100,7 +108,7 @@ public class InvoiceListViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Error loading invoices: {ex.Message}";
+            StatusMessage = $"Error: {ex.Message}";
         }
         finally
         {
@@ -113,7 +121,6 @@ public class InvoiceListViewModel : INotifyPropertyChanged
         try
         {
             Customers = _customerRepo.GetAll();
-            Customers.Insert(0, new Customer { Id = 0, Name = "All Customers" });
         }
         catch (Exception ex)
         {
@@ -126,30 +133,31 @@ public class InvoiceListViewModel : INotifyPropertyChanged
         try
         {
             IsLoading = true;
-            
+        
             var allInvoices = _invoiceRepo.GetAll();
             var filtered = new ObservableCollection<Invoice>();
-            
+        
+            // Convertir strings a DateTime
+            DateTime start = DateTime.Parse(StartDate);
+            DateTime end = DateTime.Parse(EndDate).AddDays(1);
+        
             foreach (var invoice in allInvoices)
             {
-                bool matchesDate = invoice.IssueDate.Date >= StartDate.Date && 
-                                   invoice.IssueDate.Date <= EndDate.Date;
-                bool matchesCustomer = FilterCustomerId == null || 
-                                       FilterCustomerId == 0 || 
-                                       invoice.CustomerId == FilterCustomerId;
-                
+                bool matchesDate = invoice.IssueDate.Date >= start.Date && invoice.IssueDate.Date <= end.Date;
+                bool matchesCustomer = FilterCustomer == null || invoice.CustomerId == FilterCustomer.Id;
+            
                 if (matchesDate && matchesCustomer)
                 {
                     filtered.Add(invoice);
                 }
             }
-            
+        
             Invoices = filtered;
             StatusMessage = $"{Invoices.Count} invoices match filters";
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Error applying filter: {ex.Message}";
+            StatusMessage = $"Error: {ex.Message}";
         }
         finally
         {
@@ -164,8 +172,11 @@ public class InvoiceListViewModel : INotifyPropertyChanged
     
     private void ViewDetail()
     {
-        // Navigate to InvoiceDetailViewModel
-        StatusMessage = $"Viewing invoice {SelectedInvoice.InvoiceNumber}";
+        if (SelectedInvoice != null)
+        {
+            StatusMessage = $"Viewing invoice {SelectedInvoice.InvoiceNumber}";
+            ViewDetailRequested?.Invoke(this, SelectedInvoice.Id);
+        }
     }
     
     private bool CanCancelInvoice()
@@ -184,7 +195,7 @@ public class InvoiceListViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Error cancelling invoice: {ex.Message}";
+            StatusMessage = $"Error: {ex.Message}";
         }
         finally
         {

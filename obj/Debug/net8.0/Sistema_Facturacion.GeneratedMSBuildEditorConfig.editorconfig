@@ -1,4 +1,8 @@
 is_global = true
+build_property.EnableAotAnalyzer = 
+build_property.EnableSingleFileAnalyzer = 
+build_property.EnableTrimAnalyzer = 
+build_property.IncludeAllContentForSelfExtract = 
 build_property.AvaloniaNameGeneratorIsEnabled = true
 build_property.AvaloniaNameGeneratorBehavior = InitializeComponent
 build_property.AvaloniaNameGeneratorDefaultFieldModifier = internal
@@ -24,5 +28,26 @@ build_property.EnableCodeStyleSeverity =
 [/home/fdx/Projects/Sistema_Facturacion/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
+[/home/fdx/Projects/Sistema_Facturacion/Views/CategoryView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/home/fdx/Projects/Sistema_Facturacion/Views/CustomerView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/home/fdx/Projects/Sistema_Facturacion/Views/InvoiceDetailView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/home/fdx/Projects/Sistema_Facturacion/Views/InvoiceListView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/home/fdx/Projects/Sistema_Facturacion/Views/LoginView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
 [/home/fdx/Projects/Sistema_Facturacion/Views/MainWindow.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/home/fdx/Projects/Sistema_Facturacion/Views/ProductView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/home/fdx/Projects/Sistema_Facturacion/Views/SaleView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

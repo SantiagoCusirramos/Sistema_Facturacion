@@ -1,0 +1,4 @@
+/home/fdx/Projects/Sistema_Facturacion/publish/Sistema_Facturacion.pdb
+/home/fdx/Projects/Sistema_Facturacion/publish/libHarfBuzzSharp.so
+/home/fdx/Projects/Sistema_Facturacion/publish/libSkiaSharp.so
+/home/fdx/Projects/Sistema_Facturacion/publish/Sistema_Facturacion
