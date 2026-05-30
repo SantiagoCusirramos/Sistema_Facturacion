@@ -68,3 +68,19 @@ Posteriormente, se ejecuta el script que contiene las tablas, relaciones y demá
 ```bash
 sqlcmd -S localhost -U sa -P "PASSWORDS" -C -d InvoiceSystem -i ~/Projects/Sistema_Facturacion/Facturacion_DB/facturacion_db.sql
 ```
+
+---
+
+## Verificacion del proyecto
+
+Una forma curiosa de probar que el proyecto este bien construido es con:
+
+```bash
+rm -rf bin obj
+
+/usr/share/dotnet/dotnet restore
+/usr/share/dotnet/dotnet build
+/usr/share/dotnet/dotnet run
+```
+
+Con esto lo que hacemos es limpiar y compilar el proyecto, ademas de que se probara si es que este mismo funciona con el RUN.
