@@ -322,10 +322,7 @@ public class SaleViewModel : INotifyPropertyChanged
     
                 // Calcular nuevo stock
                 int newStock = product.Stock - item.Quantity;
-    
-                // Actualizar stock en Product
-                _productRepo.UpdateStock(item.ProductId, newStock);
-    
+                
                 // Registrar en Kardex
                 _kardexRepo.RegisterSale(item.ProductId, item.Quantity, item.Id);
     

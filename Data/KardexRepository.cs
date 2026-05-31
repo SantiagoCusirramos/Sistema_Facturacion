@@ -90,7 +90,7 @@ public class KardexRepository
         using var conn = DatabaseHelper.GetConnection();
         conn.Open();
         
-        string query = "SELECT TOP 1 current_stock FROM Kardex WHERE product_id = @productId ORDER BY movement_date DESC";
+        string query = "SELECT stock FROM Product WHERE id = @productId";
         
         using var cmd = new SqlCommand(query, conn);
         cmd.Parameters.AddWithValue("@productId", productId);
@@ -103,17 +103,18 @@ public class KardexRepository
     {
         using var conn = DatabaseHelper.GetConnection();
         conn.Open();
-        
-        // Obtener stock actual
+    
+        // Obtener stock ACTUAL desde la tabla Product
         int currentStock = GetCurrentStock(productId);
         int previousStock = currentStock;
         int newStock = movementType == "SALE" ? currentStock - quantity : currentStock + quantity;
-        
+    
         if (newStock < 0) newStock = 0;
-        
+    
+        // Insertar en Kardex
         string query = @"INSERT INTO Kardex (product_id, invoice_detail_id, quantity, previous_stock, current_stock, movement_type)
-                         VALUES (@product_id, @invoice_detail_id, @quantity, @previous_stock, @current_stock, @movement_type)";
-        
+                     VALUES (@product_id, @invoice_detail_id, @quantity, @previous_stock, @current_stock, @movement_type)";
+    
         using var cmd = new SqlCommand(query, conn);
         cmd.Parameters.AddWithValue("@product_id", productId);
         cmd.Parameters.AddWithValue("@invoice_detail_id", (object?)invoiceDetailId ?? DBNull.Value);
@@ -121,9 +122,9 @@ public class KardexRepository
         cmd.Parameters.AddWithValue("@previous_stock", previousStock);
         cmd.Parameters.AddWithValue("@current_stock", newStock);
         cmd.Parameters.AddWithValue("@movement_type", movementType);
-        
+    
         cmd.ExecuteNonQuery();
-        
+    
         // Actualizar stock en Product
         var productRepo = new ProductRepository();
         productRepo.UpdateStock(productId, newStock);

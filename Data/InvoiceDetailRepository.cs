@@ -12,20 +12,20 @@ public class InvoiceDetailRepository
     public ObservableCollection<InvoiceDetail> GetByInvoiceId(int invoiceId)
     {
         var details = new ObservableCollection<InvoiceDetail>();
-        
+    
         using var conn = DatabaseHelper.GetConnection();
         conn.Open();
-        
-        string query = @"SELECT id, invoice_id, product_id, quantity, unit_price, subtotal,
-                                p.name as product_name, p.stock as current_stock
-                         FROM InvoiceDetail
-                         LEFT JOIN Product p ON product_id = p.id
-                         WHERE invoice_id = @invoiceId";
-        
+    
+        string query = @"SELECT d.id, d.invoice_id, d.product_id, d.quantity, d.unit_price, d.subtotal,
+                            p.name as product_name
+                     FROM InvoiceDetail d
+                     LEFT JOIN Product p ON d.product_id = p.id
+                     WHERE d.invoice_id = @invoiceId";
+    
         using var cmd = new SqlCommand(query, conn);
         cmd.Parameters.AddWithValue("@invoiceId", invoiceId);
         using var reader = cmd.ExecuteReader();
-        
+    
         while (reader.Read())
         {
             var detail = new InvoiceDetail
@@ -40,17 +40,16 @@ public class InvoiceDetailRepository
             
             if (!reader.IsDBNull(6))
             {
-                detail.Product = new Product 
-                { 
-                    Id = detail.ProductId, 
-                    Name = reader.GetString(6),
-                    Stock = reader.IsDBNull(7) ? 0 : reader.GetInt32(7)
+                detail.Product = new Product
+                {
+                    Id = detail.ProductId,
+                    Name = reader.GetString(6)
                 };
             }
-            
+        
             details.Add(detail);
         }
-        
+    
         return details;
     }
     

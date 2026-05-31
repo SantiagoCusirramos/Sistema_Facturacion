@@ -29,10 +29,10 @@
                 <MenuItem Header="_Invoice List" Command="{Binding ShowInvoicesCommand}"/>
             </MenuItem>
             
-            <!-- Reports Menu (optional) -->
+            <!-- Reports Menu -->
             <MenuItem Header="_Reports">
-                <MenuItem Header="_Sales Report" IsEnabled="False"/>
-                <MenuItem Header="_Product Report" IsEnabled="False"/>
+                <MenuItem Header="_Sales Report" Command="{Binding ShowSalesReportCommand}"/>
+                <MenuItem Header="_Product Report" Command="{Binding ShowProductReportCommand}"/>
             </MenuItem>
             
             <!-- Help Menu -->

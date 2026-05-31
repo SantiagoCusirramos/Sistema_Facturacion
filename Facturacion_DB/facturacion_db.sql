@@ -111,6 +111,6 @@ CREATE TABLE AuditLog (
 );
 
 
--- INSERT INTO PaymentMethod (name) VALUES ('Cash'), ('Card'), ('Transfer');
--- INSERT INTO DocumentType (code, name) VALUES ('01', 'Invoice'), ('03', 'Receipt');
--- INSERT INTO AppUser (username, password_hash, full_name) VALUES ('admin', 'admin123', 'Administrator');
+INSERT INTO PaymentMethod (name) VALUES ('Cash'), ('Card'), ('Transfer');
+INSERT INTO DocumentType (code, name) VALUES ('01', 'Invoice'), ('03', 'Receipt');
+INSERT INTO AppUser (username, password_hash, full_name) VALUES ('admin', 'admin123', 'Administrator');

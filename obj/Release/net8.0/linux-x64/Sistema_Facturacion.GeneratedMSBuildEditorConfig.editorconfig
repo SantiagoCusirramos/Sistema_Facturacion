@@ -49,5 +49,8 @@ build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 [/home/fdx/Projects/Sistema_Facturacion/Views/ProductView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
+[/home/fdx/Projects/Sistema_Facturacion/Views/ReportView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
 [/home/fdx/Projects/Sistema_Facturacion/Views/SaleView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

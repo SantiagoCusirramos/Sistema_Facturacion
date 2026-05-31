@@ -22,12 +22,20 @@ public class InvoiceDetailViewModel : INotifyPropertyChanged
     private string _statusMessage = string.Empty;
     private bool _isLoading = false;
     
-    public event EventHandler? BackRequested;
-    
     public Invoice CurrentInvoice
     {
         get => _currentInvoice;
-        set { _currentInvoice = value; OnPropertyChanged(); }
+        set 
+        { 
+            _currentInvoice = value; 
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(InvoiceNumber));
+            OnPropertyChanged(nameof(IssueDate));
+            OnPropertyChanged(nameof(SubtotalFormatted));
+            OnPropertyChanged(nameof(TaxFormatted));
+            OnPropertyChanged(nameof(TotalFormatted));
+            OnPropertyChanged(nameof(Status));
+        }
     }
     
     public ObservableCollection<InvoiceDetail> Details
@@ -54,21 +62,22 @@ public class InvoiceDetailViewModel : INotifyPropertyChanged
         set { _isLoading = value; OnPropertyChanged(); }
     }
     
-    public string InvoiceNumber => CurrentInvoice?.InvoiceNumber ?? string.Empty;
-    public string IssueDate => CurrentInvoice?.IssueDate.ToString("dd/MM/yyyy HH:mm") ?? string.Empty;
-    public string SubtotalFormatted => $"S/ {CurrentInvoice?.Subtotal:F2}";
-    public string TaxFormatted => $"S/ {CurrentInvoice?.Tax:F2}";
-    public string TotalFormatted => $"S/ {CurrentInvoice?.Total:F2}";
-    public string Status => CurrentInvoice?.Status ?? string.Empty;
+    public string InvoiceNumber => CurrentInvoice?.InvoiceNumber ?? "N/A";
+    public string IssueDate => CurrentInvoice?.IssueDate.ToString("dd/MM/yyyy HH:mm") ?? "N/A";
+    public string SubtotalFormatted => CurrentInvoice != null ? $"S/ {CurrentInvoice.Subtotal:F2}" : "S/ 0.00";
+    public string TaxFormatted => CurrentInvoice != null ? $"S/ {CurrentInvoice.Tax:F2}" : "S/ 0.00";
+    public string TotalFormatted => CurrentInvoice != null ? $"S/ {CurrentInvoice.Total:F2}" : "S/ 0.00";
+    public string Status => CurrentInvoice?.Status ?? "N/A";
+    public string StatusColor => CurrentInvoice?.Status == "ACTIVE" ? "#27AE60" : "#E74C3C";
     
-    public ICommand LoadInvoiceCommand { get; }
     public ICommand PrintCommand { get; }
     public ICommand BackCommand { get; }
     
+    public event EventHandler? BackRequested;
+    
     public InvoiceDetailViewModel()
     {
-        LoadInvoiceCommand = new RelayCommand(LoadInvoice);
-        PrintCommand = new RelayCommand(PrintInvoice);
+        PrintCommand = new RelayCommand(PrintInvoice, CanPrint);
         BackCommand = new RelayCommand(GoBack);
     }
     
@@ -77,22 +86,29 @@ public class InvoiceDetailViewModel : INotifyPropertyChanged
         try
         {
             IsLoading = true;
+            StatusMessage = "Loading invoice...";
+            
             CurrentInvoice = _invoiceRepo.GetById(invoiceId);
+            
             if (CurrentInvoice != null)
             {
                 Customer = _customerRepo.GetById(CurrentInvoice.CustomerId);
+                
                 LoadDetails();
-                UpdateDisplayProperties();
-                StatusMessage = $"Invoice {CurrentInvoice.InvoiceNumber} loaded";
+                
+                StatusMessage = $"✅ Invoice {CurrentInvoice.InvoiceNumber} loaded successfully";
+                Console.WriteLine($"Invoice loaded: {CurrentInvoice.InvoiceNumber}, Details: {Details.Count}");
             }
             else
             {
-                StatusMessage = "Invoice not found";
+                StatusMessage = "❌ Invoice not found";
+                Console.WriteLine($"Invoice {invoiceId} not found");
             }
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Error loading invoice: {ex.Message}";
+            StatusMessage = $"❌ Error loading invoice: {ex.Message}";
+            Console.WriteLine($"Error: {ex.Message}");
         }
         finally
         {
@@ -100,40 +116,36 @@ public class InvoiceDetailViewModel : INotifyPropertyChanged
         }
     }
     
-    private void LoadInvoice()
-    {
-        // This method is called when navigating directly
-        // Actual implementation depends on navigation pattern
-    }
-    
-    
-    
     private void LoadDetails()
     {
-        if (CurrentInvoice != null)
+        try
         {
-            Details = _detailRepo.GetByInvoiceId(CurrentInvoice.Id);
+            if (CurrentInvoice == null) return;
             
-            // Load product names for each detail
+            Details = _detailRepo.GetByInvoiceId(CurrentInvoice.Id);
+        
             foreach (var detail in Details)
             {
-                var product = _productRepo.GetById(detail.ProductId);
-                if (product != null)
+                if (detail.Product == null && detail.ProductId > 0)
                 {
-                    detail.Product = product;
+                    var product = _productRepo.GetById(detail.ProductId);
+                    if (product != null)
+                    {
+                        detail.Product = product;
+                    }
                 }
+            
+                Console.WriteLine($"Detail: ProductId={detail.ProductId}, ProductName={detail.Product?.Name}, Qty={detail.Quantity}");
             }
+        
+            StatusMessage = $"Loaded {Details.Count} products";
+            Console.WriteLine($"Total details loaded: {Details.Count}");
         }
-    }
-    
-    private void UpdateDisplayProperties()
-    {
-        OnPropertyChanged(nameof(InvoiceNumber));
-        OnPropertyChanged(nameof(IssueDate));
-        OnPropertyChanged(nameof(SubtotalFormatted));
-        OnPropertyChanged(nameof(TaxFormatted));
-        OnPropertyChanged(nameof(TotalFormatted));
-        OnPropertyChanged(nameof(Status));
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error loading details: {ex.Message}";
+            Console.WriteLine($"Error: {ex.Message}");
+        }
     }
     
     private bool CanPrint()
@@ -143,9 +155,8 @@ public class InvoiceDetailViewModel : INotifyPropertyChanged
     
     private void PrintInvoice()
     {
-        // This will be implemented later with PDF generation
-        StatusMessage = $"Printing invoice {CurrentInvoice?.InvoiceNumber}";
-        // TODO: Implement PDF generation and print
+        StatusMessage = $"🖨️ Printing invoice {CurrentInvoice?.InvoiceNumber}";
+        // TODO: Implement PDF generation
     }
     
     private void GoBack()

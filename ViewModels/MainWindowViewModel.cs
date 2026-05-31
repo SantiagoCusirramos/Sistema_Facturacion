@@ -4,7 +4,6 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Media;
 using Sistema_Facturacion.Helpers;
 
 namespace Sistema_Facturacion.ViewModels;
@@ -41,9 +40,11 @@ public class MainWindowViewModel : INotifyPropertyChanged
     public ICommand ShowSalesCommand { get; }
     public ICommand ShowInvoicesCommand { get; }
     public ICommand ShowKardexCommand { get; }
-    public ICommand ShowReportsCommand { get; }
+    public ICommand ShowSalesReportCommand { get; }
+    public ICommand ShowProductReportCommand { get; }
     public ICommand LogoutCommand { get; }
     public ICommand ExitCommand { get; }
+
     
     public MainWindowViewModel()
     {
@@ -53,47 +54,63 @@ public class MainWindowViewModel : INotifyPropertyChanged
         ShowSalesCommand = new RelayCommand(() => ShowView("Sales"));
         ShowInvoicesCommand = new RelayCommand(() => ShowView("Invoices"));
         ShowKardexCommand = new RelayCommand(() => ShowView("Kardex"));
-        ShowReportsCommand = new RelayCommand(() => ShowView("Reports"));
+        ShowSalesReportCommand = new RelayCommand(() => ShowView("SalesReport"));
+        ShowProductReportCommand = new RelayCommand(() => ShowView("ProductReport"));
         LogoutCommand = new RelayCommand(Logout);
         ExitCommand = new RelayCommand(Exit);
         
         ShowView("Dashboard");
     }
-    
+
     private void ShowView(string viewName)
-{
-    CurrentModule = viewName;
-    
-    switch (viewName)
     {
-        case "Dashboard":
-            CurrentView = CreateDashboardView();
-            break;
-        case "Categories":
-            CurrentView = new Views.CategoryView();
-            break;
-        case "Customers":
-            CurrentView = new Views.CustomerView();
-            break;
-        case "Products":
-            CurrentView = new Views.ProductView();
-            break;
-        case "Sales":
-            CurrentView = new Views.SaleView();
-            break;
-        case "Invoices":
-            var invoiceListView = new Views.InvoiceListView();
-            var invoiceListVM = new InvoiceListViewModel();
-            invoiceListView.DataContext = invoiceListVM;
-            invoiceListVM.ViewDetailRequested += OnViewDetailRequested;
-            CurrentView = invoiceListView;
-            break;
-        default:
-            CurrentView = CreateDashboardView();
-            break;
+        CurrentModule = viewName;
+        
+        switch (viewName)
+        {
+            case "Dashboard":
+                CurrentView = CreateDashboardView();
+                break;
+            case "Categories":
+                CurrentView = new Views.CategoryView();
+                break;
+            case "Customers":
+                CurrentView = new Views.CustomerView();
+                break;
+            case "Products":
+                CurrentView = new Views.ProductView();
+                break;
+            case "Sales":
+                CurrentView = new Views.SaleView();
+                break;
+            case "SalesReport":
+                ShowReportView(0);
+                break;
+            case "ProductReport":
+                ShowReportView(1);
+                break;
+            case "Invoices":
+                var invoiceListView = new Views.InvoiceListView();
+                var invoiceListVM = new InvoiceListViewModel();
+                invoiceListView.DataContext = invoiceListVM;
+                invoiceListVM.ViewDetailRequested += OnViewDetailRequested;
+                CurrentView = invoiceListView;
+                break;
+            default:
+                CurrentView = CreateDashboardView();
+                break;
+        }
     }
-}
-    
+
+    private void ShowReportView(int id)
+    {
+        var reportView = new Views.ReportView();
+        var reportVM = new ReportViewModel();
+        reportVM.SelectedTabIndex = id;
+        reportView.DataContext = reportVM;
+        CurrentView = reportView;
+    }
+
     private void OnViewDetailRequested(object? sender, int invoiceId)
     {
         var detailView = new Views.InvoiceDetailView();
